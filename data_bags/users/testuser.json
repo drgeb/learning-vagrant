@@ -1,0 +1,20 @@
+{
+  "groups": [
+    "sysadmin"
+  ],
+  "comment": "Test User Name",
+  "password": "$1$ah/yjUPA$9PyUSdGlKaXSUtNrlw/4q.",
+  "ssh_keys": [
+    "ssh-rsa AAA456...uvw== testuser@testdomain.com", 
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6SIMHg0ICJ8D5Mye1qUeSMxSdis00hbe4Xwl46YTy/mhziThFZqkrWlSIvZPoZ4OcAM5mG4IFp18154hnKQZFpgd/sZoqwCqh6VV1FP4JARyvOgLr/ETM6lH0gmF4rejBPyHxqq/kE/nffFdKhdmWaB8N6fBt8VOYdpvd9Xun//ALQ/MEJWfmYyVLqSSFbL8L/z8sesSatzLCKTeGnH20olOHUQzngTcY1Y6odIThQz5YNPORF9f8ZQhFOz9+wbM+OsH4DYEgV9cyUkzNp90PBruLkn49jbEGAsqtHRZSfxVUUWGNeVKRyZaH/MYCNFhRJkbaREu6JmilbN+/vFCV drgeb@Gerald-Bennetts-MacBook-Pro.local"
+  ],
+  "id": "testuser",
+  "homesick_castles": [
+    {
+      "name": "dotfiles",
+      "source": "git://github.com/technicalpickles/dotpickles.git"
+    }
+  ],
+  "shell": "/bin/bash",
+  "email": "testuser@testdomain.com"
+}

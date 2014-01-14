@@ -1,0 +1,13 @@
+{
+  "id": "devuser",
+  "shell": "/bin/bash",
+  "email": "devuser@testdomain.com",
+  "comment": "User for all development",
+  "password": "$1$ah/yjUPA$9PyUSdGlKaXSUtNrlw/4q.",
+  "groups": [
+    "sysadmin"
+  ],
+  "ssh_keys": [
+    "ssh-rsa AAA456...uvw== testuser@testdomain.com"
+  ]
+}
