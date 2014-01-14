@@ -7,9 +7,10 @@ Berksfile.lock
 .*.sw[a-z]
 *.un~
 /cookbooks
+/install-images
 
 # Bundler
 Gemfile.lock
 bin/*
 .bundle/*
-
+/cookbooks/
