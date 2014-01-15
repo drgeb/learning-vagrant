@@ -10,7 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise64-ruby-1.9.3-p194"
+  # config.vm.box = "precise64-ruby-1.9.3-p194"
+  config.vm.box = "precise64"
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
@@ -93,42 +94,42 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.data_bags_path = [ "data_bags" ]
 
     chef.log_level      = :debug
-    chef.add_recipe "chef-client"
-
-      # stuff that should be in base box
-      #    chef.add_recipe "sudo"
-      chef.json = {
-              'authorization' => {
-                  'sudo' => {
-                    'groups' => ['admin', 'wheel', 'sysadmin'],
-                    'users' => ['testuser', 'vagrant'],
-                    'passwordless' => true,
-                    'include_sudoers_d' => true,
-                   }
-               },
-
-      }
-
-      chef.run_list = [
-      		      'recipe[sudo]',
-      		      ]
-
-    # setup users (from data_bags/users/*.json)
-    #chef.add_recipe "users::ruby_shadow" # necessary for password shadow support
-    #chef.add_recipe "users::sysadmins" # creates users and sysadmin group
-    #chef.add_recipe "users::sysadmin_sudo" # adds %sysadmin group to sudoers
 
 
     # Highly recommended to keep apt packages metadata in sync and
     # be able to use apt mirrors.
-    chef.add_recipe     "apt"
+    # Put recipe[apt] first in the run list. If you have other recipes that you want to use to configure how apt behaves, like new sources, notify the execute resource to run
+    chef.add_recipe "apt::default"
+
+
+    # stuff that should be in base box
+    #    chef.add_recipe "sudo"
+#    chef.json = {
+#            'authorization' => {
+#                'sudo' => {
+#                  'groups' => ['admin', 'wheel', 'sysadmin'],
+#                  'users' => ['testuser', 'vagrant'],
+#                  'passwordless' => true,
+#                  'include_sudoers_d' => true,
+#                 }
+#             },
+#	          }
+
+    # setup users (from data_bags/users/*.json)
+    #    chef.add_recipe "users::ruby_shadow" # necessary for password shadow support
+    chef.add_recipe "users::default"
+    chef.add_recipe "users::sysadmins" # creates users and sysadmin group
+    # chef.add_recipe "users::sysadmin_sudo" # adds %sysadmin group to sudoers
+
+    chef.add_recipe "chef-client"
+
   #  chef.add_recipe  "sudo"
      chef.add_recipe "java"
 
       chef.json = {
-#        :rabbitmq => {
-#          :enabled_plugins => ["rabbitmq_management"]
-#        },
+        :rabbitmq => {
+          :enabled_plugins => ["rabbitmq_management"]
+        },
 	:java => {
 	     :install_flavor => "oracle",
 	     :java_home => "/opt/myjava",
@@ -145,11 +146,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.add_recipe "apache2"
     chef.add_recipe "git"
     chef.add_recipe "maven"
-#    chef.add_recipe "openssl"
-#    chef.add_recipe "mysql"
-#    chef.add_recipe "rabbitmq"
+    chef.add_recipe "openssl"
+    chef.add_recipe "mysql"
+    chef.add_recipe "rabbitmq"
   ##  chef.add_recipe "chef-oracle-xe"
-#    chef.add_recipe "logwatch"
+    chef.add_recipe "logwatch"
   ##  chef.add_recipe "nginx"
 #    chef.add_recipe "tomcat"
   ##  chef.add_recipe "tomcat6_init_script"

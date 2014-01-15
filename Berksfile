@@ -4,7 +4,7 @@ metadata
 
 #System Configuration
 cookbook 'curl'
-#cookbook 'users'
+cookbook 'users'
 cookbook 'timezone-ii'
 cookbook 'ntp'
 cookbook 'sudo'
@@ -19,6 +19,7 @@ cookbook 'build-essential'
 cookbook 'emacs'
 
 #Development Tools
+cookbook 'openssl'
 cookbook 'nginx'
 cookbook 'java'
 cookbook 'git'
@@ -28,6 +29,9 @@ cookbook 'eclipse', git: 'https://github.com/geocent-cookbooks/eclipse.git'
 cookbook 'chef-sonar', git: 'https://github.com/geocent-cookbooks/chef-sonar.git'
 cookbook 'jrules' , git: 'https://github.com/geocent-cookbooks/jrules.git'
 cookbook 'apache2'
+cookbook 'mysql'
+cookbook 'rabbitmq'
+cookbook 'logwatch'
 
 #cookbook 'jrockit', git:
 #cookbook 'weblogic', git: 'https://github.com/geocent-cookbooks/weblogic.git'
