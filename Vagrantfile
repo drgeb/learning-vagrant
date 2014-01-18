@@ -84,6 +84,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #   puppet.manifest_file  = "site.pp"
   # end
 
+  config.vm.provision :chef_solo do |chef|
+       # this provision block upgrades the Chef Client before the real 
+       # Chef run starts
+       chef.log_level      = :debug
+       chef.add_recipe "chef-client::upgrade"
+
+       # Highly recommended to keep apt packages metadata in sync and
+       # be able to use apt mirrors.
+       # Put recipe[apt] first in the run list. If you have other recipes that you want to use to configure how apt behaves, like new sources, notify the execute resource to run
+       chef.add_recipe "apt"
+       chef.json = { 
+    	        	"apt" => {
+		     	     "compiletime" => true,
+			     "periodic_update_min_delay" => 8640
+			     }
+		  }
+  end
+
+
   # Enable provisioning with chef solo, specifying a cookbooks path, roles
   # path, and data_bags path (all relative to this Vagrantfile), and adding
   # some recipes and/or roles.
@@ -96,37 +115,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     chef.log_level      = :debug
 
 
-    # Highly recommended to keep apt packages metadata in sync and
-    # be able to use apt mirrors.
-    # Put recipe[apt] first in the run list. If you have other recipes that you want to use to configure how apt behaves, like new sources, notify the execute resource to run
-    chef.add_recipe "apt::default"
-
-
     # stuff that should be in base box
-    #    chef.add_recipe "sudo"
-#    chef.json = {
-#            'authorization' => {
-#                'sudo' => {
-#                  'groups' => ['admin', 'wheel', 'sysadmin'],
-#                  'users' => ['testuser', 'vagrant'],
-#                  'passwordless' => true,
-#                  'include_sudoers_d' => true,
-#                 }
-#             },
-#	          }
+    chef.add_recipe "sudo"
+    chef.json = {
+            'authorization' => {
+                'sudo' => {
+                  'groups' => ['admin', 'wheel', 'sysadmin'],
+                  'users' => ['testuser', 'vagrant'],
+                  'passwordless' => true,
+                  'include_sudoers_d' => true,
+                 }
+             },
+    }
 
     # setup users (from data_bags/users/*.json)
     #    chef.add_recipe "users::ruby_shadow" # necessary for password shadow support
+    chef.add_recipe "chef-solo-search"
     chef.add_recipe "users::default"
     chef.add_recipe "users::sysadmins" # creates users and sysadmin group
-    # chef.add_recipe "users::sysadmin_sudo" # adds %sysadmin group to sudoers
+#    chef.add_recipe "users::sysadmin_sudo" # adds %sysadmin group to sudoers
 
-    chef.add_recipe "chef-client"
 
-  #  chef.add_recipe  "sudo"
      chef.add_recipe "java"
 
-      chef.json = {
+     chef.json = {
         :rabbitmq => {
           :enabled_plugins => ["rabbitmq_management"]
         },
@@ -141,22 +153,28 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	}
    }
 
-  #  chef.add_recipe "myhostsfile"
-    chef.add_recipe "nmon"
-    chef.add_recipe "apache2"
-    chef.add_recipe "git"
-    chef.add_recipe "maven"
-    chef.add_recipe "openssl"
-    chef.add_recipe "mysql"
-    chef.add_recipe "rabbitmq"
+#    chef.add_recipe "hostsfile"
+#    chef.json = {
+#	'hostsfile' => {
+#         '10.10.10.10' => 'rabbit2'
+#        }
+#    }
+
+   chef.add_recipe "nmon"
+   chef.add_recipe "apache2"
+   chef.add_recipe "git"
+   chef.add_recipe "maven"
+   chef.add_recipe "openssl"
+   # chef.add_recipe "mysql"
+   # chef.add_recipe "rabbitmq"
   ##  chef.add_recipe "chef-oracle-xe"
-    chef.add_recipe "logwatch"
+   chef.add_recipe "logwatch"
   ##  chef.add_recipe "nginx"
-#    chef.add_recipe "tomcat"
+   chef.add_recipe "tomcat"
   ##  chef.add_recipe "tomcat6_init_script"
   ##  chef.add_recipe "chef-ubuntu-desktop"
   #  chef.add_recipe "chef-android-sdk"
-#    chef.add_role "web"
+  #  chef.add_role "web"
 
      # You may also specify custom JSON attributes:
 #    chef.json = { :mysql_password => "foo" }
@@ -166,7 +184,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
   #
-  # The Opscode Platform uses HTTPS. Substitute your organization for
+  # The Opscode Platform uses HTTPS. Su<bstitute your organization for
   # ORGNAME in the URL and validation key.
   #
   # If you have your own Chef Server, use the appropriate URL, which may be
