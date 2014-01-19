@@ -4,6 +4,7 @@ metadata
 
 #System Configuration
 cookbook 'curl'
+cookbook 'roles', path: 'cookbooks/roles'
 
 # Use chef-solo-search because This recipe (I am guessing its users cookbook uses search. Chef Solo does not support search unless you install the chef-solo-search cookbook.
 cookbook 'chef-solo-search'
@@ -16,6 +17,8 @@ cookbook 'chef-client', path: '../berkshelf/cookbooks/chef-client'
 #cookbook 'chef-ssh-keys',
 cookbook 'Ohai'
 #cookbook 'hostsfile'
+cookbook 'wireshark', path: 'cookbooks/wireshark'
+cookbook ' cookbook-certificate', git: 'https://github.com/atomic-penguin/cookbook-certificate'
 
 #System Tools
 cookbook 'apt'
@@ -24,6 +27,7 @@ cookbook 'emacs'
 
 #Development Tools
 cookbook 'openssl'
+cookbook 'openssh'
 cookbook 'nginx'
 cookbook 'java'
 cookbook 'git'
@@ -41,3 +45,6 @@ cookbook 'logwatch'
 #cookbook 'jrockit', git:
 #cookbook 'weblogic', git: 'https://github.com/geocent-cookbooks/weblogic.git'
 #cookbook 'oracle-xe' , git: 'https://github.com/geocent-cookbooks/oracle-xe'
+
+#My Cook Books
+cookbook 'magic_java', path: 'cookbooks/magic_java'

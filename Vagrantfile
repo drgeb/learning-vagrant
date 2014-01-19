@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+#Vagrant.require_plugin "vagrant-berkshelf"
+#Vagrant.require_plugin "vagrant-omnibus"
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -50,13 +53,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
-  # config.vm.provider :virtualbox do |vb|
+  config.vm.provider :virtualbox do |vb|
   #   # Don't boot with headless mode
-  #   vb.gui = true
+  vb.gui = true
   #
   #   # Use VBoxManage to customize the VM. For example to change memory:
   #   vb.customize ["modifyvm", :id, "--memory", "1024"]
-  # end
+  end
   #
   # View the documentation for the provider you're using for more
   # information on available options.
@@ -87,7 +90,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :chef_solo do |chef|
        # this provision block upgrades the Chef Client before the real 
        # Chef run starts
-       chef.log_level      = :debug
+#       chef.log_level      = :debug
        chef.add_recipe "chef-client::upgrade"
 
        # Highly recommended to keep apt packages metadata in sync and
@@ -114,29 +117,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     chef.log_level      = :debug
 
-
+    chef.add_role "base"
+    chef.add_role "performance"
+    chef.add_role "developer"
+ 
     # stuff that should be in base box
-    chef.add_recipe "sudo"
-    chef.json = {
-            'authorization' => {
-                'sudo' => {
-                  'groups' => ['admin', 'wheel', 'sysadmin'],
-                  'users' => ['testuser', 'vagrant'],
-                  'passwordless' => true,
-                  'include_sudoers_d' => true,
-                 }
-             },
-    }
+#    chef.add_recipe "sudo"
+#    chef.json = {
+#            'authorization' => {
+#                'sudo' => {
+#                  'groups' => ['admin', 'wheel', 'sysadmin'],
+#                  'users' => ['testuser', 'vagrant'],
+#                  'passwordless' => true,
+#                  'include_sudoers_d' => true,
+#                 }
+#             },
+#    }
 
     # setup users (from data_bags/users/*.json)
     #    chef.add_recipe "users::ruby_shadow" # necessary for password shadow support
     chef.add_recipe "chef-solo-search"
-    chef.add_recipe "users::default"
-    chef.add_recipe "users::sysadmins" # creates users and sysadmin group
+#    chef.add_recipe "users::default"
+#    chef.add_recipe "users::sysadmins" # creates users and sysadmin group
 #    chef.add_recipe "users::sysadmin_sudo" # adds %sysadmin group to sudoers
 
-
+     
      chef.add_recipe "java"
+     chef.add_recipe "magic_java"
 
      chef.json = {
         :rabbitmq => {
@@ -160,7 +167,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #        }
 #    }
 
-   chef.add_recipe "nmon"
+   chef.add_recipe "emacs"
+
    chef.add_recipe "apache2"
    chef.add_recipe "git"
    chef.add_recipe "maven"
@@ -180,6 +188,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 #    chef.json = { :mysql_password => "foo" }
 
   end
+
+  # ANDROID STUFF USING A SHELL SCRIPT
+  config.vm.provision "shell", inline: "echo Installing Android ADT bundle and NDK..."
+  config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "shell", inline: "echo Installation complete"
 
   # Enable provisioning with chef server, specifying the chef server URL,
   # and the path to the validation key (relative to this Vagrantfile).
